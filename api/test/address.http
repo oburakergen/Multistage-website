@@ -1,0 +1,10 @@
+GET {{ADDRESS_URL}}/country/all
+Accept: application/json
+
+###
+POST http://localhost:5000/address/country/create
+Content-Type: application/json
+
+{}
+
+###

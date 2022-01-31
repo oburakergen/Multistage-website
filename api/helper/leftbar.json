@@ -1,0 +1,176 @@
+[
+  {
+    "action": "mdi-folder-home",
+    "title": "$vuetify.leftbar.home.main",
+    "items": [
+      {
+        "title": "$vuetify.leftbar.home.home",
+        "to": "/"
+      },
+      {
+        "title": "$vuetify.leftbar.home.sale",
+        "to": "/dashboard/sale"
+      },
+      {
+        "title": "$vuetify.leftbar.home.add",
+        "to": "/dashboard/add"
+      }
+    ]
+  },
+  {
+    "title": "$vuetify.leftbar.product.main",
+    "action": "mdi-shopping",
+    "items": [
+      {
+        "title": "$vuetify.leftbar.product.product",
+        "to": "/product"
+      },
+      {
+        "title": "$vuetify.leftbar.product.category",
+        "to": "/product/category"
+      },
+      {
+        "title": "$vuetify.leftbar.product.bulk",
+        "to": "/product/bulk-price"
+      },
+      {
+        "title": "$vuetify.leftbar.product.tax",
+        "to": "/product/tax"
+      },
+      {
+        "title": "$vuetify.leftbar.product.currency",
+        "to": "/product/currency"
+      },
+      {
+        "title": "$vuetify.leftbar.product.image",
+        "to": "/product/image"
+      },
+      {
+        "title": "$vuetify.leftbar.product.creditCard",
+        "to": "/product/credit-card"
+      }
+    ]
+  },
+  {
+    "action": "mdi-ticket",
+    "title": "$vuetify.leftbar.campaign.main",
+    "items": [
+      {
+        "title": "$vuetify.leftbar.campaign.campaign",
+        "to": "/campaign"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.calendar",
+        "to": "/campaign/calendar"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.giftCode",
+        "to": "/campaign/gift-code"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.coupon",
+        "to": "/campaign/coupon"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.story",
+        "to": "/campaign/story"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.popup",
+        "to": "/campaign/pop-up"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.sliderSettings",
+        "to": "/campaign/slider-settings"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.categorySettings",
+        "to": "/campaign/category-settings"
+      },
+      {
+        "title": "$vuetify.leftbar.campaign.headerSettings",
+        "to": "/campaign/header-settings"
+      }
+    ]
+  },
+  {
+    "action": "mdi-bookmark-outline",
+    "title": "$vuetify.leftbar.order.main",
+    "items": [
+      {
+        "title": "$vuetify.leftbar.order.order",
+        "to": "/order"
+      },
+      {
+        "title": "$vuetify.leftbar.order.status",
+        "to": "/order/status"
+      },
+      {
+        "title": "$vuetify.leftbar.order.returns",
+        "to": "/order/return"
+      }
+    ]
+  },
+  {
+    "action": "mdi-bank-check",
+    "title": "$vuetify.leftbar.payment.main",
+    "items": [
+      {
+        "title": "$vuetify.leftbar.payment.paymentList",
+        "to": "/payment-list"
+      }
+    ]
+  },
+  {
+    "action": "mdi-account-multiple ",
+    "title": "$vuetify.leftbar.user.main",
+    "items": [
+      {
+        "title": "$vuetify.leftbar.user.user",
+        "to": "/users"
+      },
+      {
+        "title": "$vuetify.leftbar.user.status",
+        "to": "/users/status"
+      },
+      {
+        "title": "$vuetify.leftbar.user.reference",
+        "to": "/users/reference"
+      },
+      {
+        "title": "$vuetify.leftbar.user.ticket",
+        "to": "/users/ticket"
+      },
+      {
+        "title": "$vuetify.leftbar.user.mail",
+        "to": "/users/mail"
+      },
+      {
+        "title": "$vuetify.leftbar.user.sms",
+        "to": "/users/sms"
+      },
+      {
+        "title": "$vuetify.leftbar.user.registerContract",
+        "to": "/users/register-contract"
+      }
+    ]
+  },
+  {
+    "action": "mdi-cog-outline",
+    "title": "$vuetify.leftbar.setting.main",
+    "items": [
+      {
+        "title": "$vuetify.leftbar.setting.setting",
+        "to": "/setting"
+      },
+      {
+        "title": "$vuetify.leftbar.setting.country",
+        "to": "/setting/country"
+      },
+      {
+        "title": "$vuetify.leftbar.setting.seo",
+        "to": "/setting/seo"
+      }
+    ]
+  }
+]

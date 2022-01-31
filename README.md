@@ -1,0 +1,2 @@
+### laraplay
+Laraplay kurulumu

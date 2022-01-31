@@ -1,0 +1,117 @@
+version: '3.4'
+
+networks:
+  sw-br-network :
+    driver: bridge
+
+
+services:
+  agency:
+    container_name: agency
+    build:
+      context: ./agency
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    networks:
+      - sw-br-network
+
+  admin:
+    container_name: admin
+    build:
+      context: ./admin
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3001:3001"
+    networks:
+      - sw-br-network
+
+  merchant:
+    container_name: merchant
+    build:
+      context: ./merchant
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3002:3002"
+    networks:
+      - sw-br-network
+
+
+  customer:
+    container_name: customer
+    build:
+      context: ./customer
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3003:3003"
+    networks:
+      - sw-br-network
+
+  api:
+    container_name: api
+    depends_on:
+      - db
+      - redis
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - "5000:5000"
+    networks:
+      - sw-br-network
+
+  mysql:
+    container_name: mysql
+    build:
+      context: ./mysql
+      dockerfile: ./Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_USER: root
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - sw-br-network
+
+  redis:
+    container_name: redis
+    build:
+      context: ./redis
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - sw-br-network
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:80"
+      - "443-443"
+    depends_on:
+      - admin
+      - agency
+      - merchant
+      - customer
+      - mysql
+      - redis
+      - api
+    networks:
+      - sw-br-network

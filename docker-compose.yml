@@ -1,0 +1,74 @@
+version: '3.4'
+
+networks:
+  sw-br-network :
+    driver: bridge
+
+
+services:
+  agency:
+    container_name: agency
+    build:
+      context: ./agency
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    networks:
+      - sw-br-network
+
+  admin:
+    container_name: admin
+    build:
+      context: ./admin
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: development
+    ports:
+      - "3001:3001"
+    networks:
+      - sw-br-network
+
+  api:
+    container_name: api
+    depends_on:
+      - mysql
+      - redis
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: development
+    ports:
+      - "5000:5000"
+    networks:
+      - sw-br-network
+
+  mysql:
+    container_name: mysql
+    build:
+      context: ./mysql
+      dockerfile: ./Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: agency_management
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - sw-br-network
+
+  redis:
+    container_name: redis
+    build:
+      context: ./redis
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - sw-br-network
