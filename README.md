@@ -1,2 +1,1 @@
-### laraplay
-Laraplay kurulumu
+### Docker-nginx example
