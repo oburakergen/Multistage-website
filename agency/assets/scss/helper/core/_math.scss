@@ -1,0 +1,21 @@
+/*
+Sum width: sum(50px,60px,80px);
+*/
+@function sum($numbers...) {
+  $sum: 0;
+  @each $number in $numbers {
+    $sum: $sum + $number;
+  }
+  @return $sum;
+}
+/*
+uses for pow
+margin-left: pow(4,3 )*1px
+ */
+@function pow($base, $exponent) {
+  $result: 1;
+  @for $_ from 1 through $exponent {
+    $result: $result * $base;
+  }
+  @return $result;
+}

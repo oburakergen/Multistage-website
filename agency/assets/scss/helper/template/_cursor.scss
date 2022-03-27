@@ -1,0 +1,91 @@
+.cursor {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 76px;
+  height: 76px;
+  z-index: 999999;
+  pointer-events: none;
+  background-color: #fff;
+  border-radius: 50%;
+  @include transformOrigin(left top);
+  @include transition(transform .35s);
+  @include transform(scale(0,3) translate(-50%, -50%));
+  mix-blend-mode: exclusion;
+  &.cursor-view {
+    @include transform(scale(1) translate(-50%, -50%));
+    .cursor-view span {
+      line-height: 76px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #000;
+      @include transition(opacity .35s ease .25s);
+      opacity: 1;
+      visibility: visible;
+      mix-blend-mode: normal;
+      -webkit-transition: opacity .35s ease .25s;
+      -o-transition: opacity .35s ease .25s;
+      transition: opacity .35s ease .25s;
+    }
+  }
+}
+.cursor.cursor-close {
+  -webkit-transform: scale(1) translate(-50%, -50%);
+  -moz-transform: scale(1) translate(-50%, -50%);
+  -ms-transform: scale(1) translate(-50%, -50%);
+  -o-transform: scale(1) translate(-50%, -50%);
+  transform: scale(1) translate(-50%, -50%);
+}
+
+.cursor.cursor-close .cursor-close span {
+  line-height: 76px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  -webkit-transition: opacity .35s ease .25s;
+  -o-transition: opacity .35s ease .25s;
+  transition: opacity .35s ease .25s;
+  opacity: 1;
+  visibility: visible;
+  mix-blend-mode: normal;
+}
+
+.cursor.cursor-link {
+  -webkit-transform: scale(1.2) translate(-50%, -50%);
+  -moz-transform: scale(1.2) translate(-50%, -50%);
+  -ms-transform: scale(1.2) translate(-50%, -50%);
+  -o-transform: scale(1.2) translate(-50%, -50%);
+  transform: scale(1.2) translate(-50%, -50%);
+}
+
+.cursor.cursor-link .cursor-link span {
+  line-height: 76px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  -webkit-transition: opacity .35s ease .25s;
+  -o-transition: opacity .35s ease .25s;
+  transition: opacity .35s ease .25s;
+  opacity: 1;
+  visibility: visible;
+  mix-blend-mode: normal;
+}
+
+@media only screen and (max-width: 991px) {
+  .cursor {
+    display: none;
+  }
+}
+
+.cursor .cursor-helper {
+  position: absolute;
+  border-radius: 50%;
+  width: 100%;
+  text-align: center;
+}
+
+.cursor .cursor-helper span {
+  opacity: 0;
+  visibility: hidden;
+  text-shadow: 20px 20px 20px #000;
+}

@@ -4,6 +4,8 @@ networks:
   sw-br-network :
     driver: bridge
 
+volumes:
+  db_data:
 
 services:
   agency:
@@ -58,7 +60,7 @@ services:
       MYSQL_DATABASE: agency_management
     restart: always
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./db_data:/var/lib/mysql
     networks:
       - sw-br-network
 

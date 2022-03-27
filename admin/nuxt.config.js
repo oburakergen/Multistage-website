@@ -53,8 +53,6 @@ export default {
     // https://go.nuxtjs.dev/eslint
         '@nuxtjs/eslint-module',
         // https://go.nuxtjs.dev/vuetify
-        '@nuxtjs/vuetify',
-        '@nuxtjs/dotenv'
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
@@ -64,7 +62,9 @@ export default {
         // https://go.nuxtjs.dev/pwa
         '@nuxtjs/pwa',
         // https://go.nuxtjs.dev/content
-        '@nuxt/content'
+        '@nuxt/content',
+        '@nuxtjs/vuetify',
+        '@nuxtjs/dotenv'
     ],
 
     publicRuntimeConfig: {

@@ -1,0 +1,49 @@
+/*!
+ * Copyright (c) Burak ERGEN 2022.
+ */
+
+
+$Source_Serif_Pro: "~assets/font/Source_Serif_Pro";
+$Raleway: "~assets/font/Raleway";
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-weight: 400;
+  font-style: normal;
+  src: url($Source_Serif_Pro + "/SourceSerifPro-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Source Serif Pro Bolder";
+  font-weight: 800;
+  font-style: normal;
+  src: url($Source_Serif_Pro + "/SourceSerifPro-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Source Serif Pro Italic";
+  font-weight: 400;
+  font-style: italic;
+  src: url($Source_Serif_Pro + "/SourceSerifPro-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Source Serif Pro Light";
+  font-weight: 300;
+  font-style: normal;
+  src: url($Source_Serif_Pro + "/SourceSerifPro-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Raleway";
+  font-weight: 400;
+  font-style: normal;
+  src: url($Raleway + "/Raleway-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Raleway Italic";
+  font-weight: 400;
+  font-style: italic;
+  src: url($Raleway + "/Raleway-Italic-VariableFont_wght.ttf") format("truetype");
+}

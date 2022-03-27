@@ -1,0 +1,744 @@
+/*
+ Ana yönetim kısmı burası
+ Sayfa Yerleştirme Kısmı Düşünülecek
+ */
+
+use agency_management;
+SET FOREIGN_KEY_CHECKS = 0;
+ALTER DATABASE agency_management CHARACTER SET utf8mb4;
+
+
+/*
+ City Section Start
+ */
+
+DROP TABLE IF EXISTS countries;
+CREATE TABLE IF NOT EXISTS countries
+(
+    id          smallint(3) unsigned not null auto_increment,
+    uuid        BINARY(36)           not null default (UUID()) unique,
+    countryName varchar(20)          not null COMMENT 'Ülke',
+    phoneCode   varchar(10)          not null,
+    active      enum ('0','1')       not null default '1',
+    createdAt   TIMESTAMP                     default now(),
+    updatedAt   TIMESTAMP                     default now(),
+    PRIMARY KEY (id)
+);
+
+INSERT INTO countries(id,countryName, phoneCode)
+VALUES (1,'Türkiye', '+90');
+
+
+#DROP TABLE IF EXISTS cities;
+CREATE TABLE IF NOT EXISTS cities
+(
+    id        smallint(3) unsigned not null auto_increment,
+    uuid      BINARY(36)           not null default (UUID()) unique,
+    cityName  varchar(20)          not null COMMENT 'il',
+    active    enum ('0','1')                default '1',
+    countryId smallint(3) unsigned          default 1,
+    createdAt TIMESTAMP                     default now(),
+    updatedAt TIMESTAMP                     default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (countryId) REFERENCES countries (id)
+);
+
+#DROP TABLE IF EXISTS towns;
+CREATE TABLE IF NOT EXISTS towns
+(
+    id        int(5) unsigned      not null auto_increment,
+    uuid      BINARY(36)           not null default (UUID()) unique,
+    townName  varchar(30)          not null COMMENT 'ilçe',
+    active    enum ('0','1')                default '1',
+    cityId    smallint(2) unsigned not null,
+    createdAt TIMESTAMP                     default now(),
+    updatedAt TIMESTAMP                     default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (cityId) REFERENCES cities (id)
+);
+
+#DROP TABLE IF EXISTS districts;
+CREATE TABLE IF NOT EXISTS districts
+(
+    id           int(8) unsigned not null auto_increment,
+    uuid         BINARY(36)      not null default (UUID()) unique,
+    districtName varchar(50)     not null COMMENT 'Semt',
+    active       enum ('0','1')           default '1',
+    townId       int(5) unsigned not null,
+    createdAt    TIMESTAMP                default now(),
+    updatedAt    TIMESTAMP                default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (townId) REFERENCES towns (id)
+);
+/*
+ INSERT INTO district(city_id,town_name)
+SELECT city_id,town_name FROM laraplay_management.district
+ */
+
+#DROP TABLE IF EXISTS neighborhoods;
+CREATE TABLE IF NOT EXISTS neighborhoods
+(
+    id               int(11) unsigned not null auto_increment,
+    uuid             BINARY(36)       not null default (UUID()) unique,
+    neighborhoodName varchar(50)      not null COMMENT 'Sokak',
+    zipcode          varchar(10)      not null,
+    active           enum ('0','1')            default '1',
+    districtId       int(8) unsigned  not null,
+    createdAt        TIMESTAMP                 default now(),
+    updatedAt        TIMESTAMP                 default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (districtId) REFERENCES districts (id)
+);
+
+#DROP TABLE IF EXISTS vergiDairesis;
+CREATE TABLE IF NOT EXISTS vergiDairesis
+(
+    id        smallint(2) unsigned not null auto_increment,
+    uuid      BINARY(36)           not null default (UUID()) unique,
+    plaka     varchar(3)           not null,
+    il        varchar(50)          not null COMMENT 'Vergi_Dairesi',
+    ilce      varchar(100)         not null,
+    daire     varchar(255)         not null,
+    active    enum ('0','1')                default '1',
+    createdAt TIMESTAMP                     default now(),
+    updatedAt TIMESTAMP                     default now(),
+    PRIMARY KEY (id)
+);
+/*
+ City Section End
+ */
+
+/*
+ Dil Ayarları
+ */
+DROP TABLE IF EXISTS languages;
+CREATE TABLE IF NOT EXISTS languages
+(
+    id        BINARY(36)  not null default (UUID()) unique,
+    name      varchar(30) not null COMMENT 'Language Name',
+    icon      varchar(20) not null,
+    iso       varchar(5)  not null,
+    active    enum ('0','1')       default '1',
+    createdAt TIMESTAMP            default now(),
+    updatedAt TIMESTAMP            default now(),
+    PRIMARY KEY (id)
+);
+INSERT INTO languages(name, icon, iso)
+VALUES ('Türkçe', 'tr-TR', 'tr_TR'),
+       ('English', 'en-US', 'en_US');
+
+
+DROP TABLE IF EXISTS currencies;
+CREATE TABLE IF NOT EXISTS currencies
+(
+    id        BINARY(36)  not null default (UUID()) unique,
+    name      varchar(30) not null,
+    icon      varchar(20) not null,
+    iso       varchar(5)  not null,
+    price     decimal(4, 4)        default 0,
+    active    enum ('0','1')       default '1',
+    createdAt TIMESTAMP            default now(),
+    updatedAt TIMESTAMP            default now(),
+    PRIMARY KEY (id)
+);
+INSERT INTO currencies(name, icon, iso)
+VALUES ('Türkçe', '₺', 'TRY'),
+       ('English', '$', 'USD');
+/*
+ Dil Ayarları
+ */
+
+
+DROP TABLE IF EXISTS filePaths;
+CREATE TABLE IF NOT EXISTS filePaths
+(
+    id             BINARY(36)   not null default (UUID()) unique,
+    fileSize       varchar(30)  null,
+    fileTitle      varchar(30)  null,
+    fileType       char(6)      null,
+    videoEmbed     boolean               default 0,
+    videoEmbedHref varchar(100) null,
+    encryptionType smallint(3)           default 0,
+    encryptionText varchar(150) null,
+    active         enum ('0','1')        default '1',
+    createdAt      TIMESTAMP             default now(),
+    updatedAt      TIMESTAMP             default now(),
+    PRIMARY KEY (id)
+);
+
+/*
+ Manager Area Start
+ */
+
+
+DROP TABLE IF EXISTS managerRoles;
+CREATE TABLE IF NOT EXISTS managerRoles
+(
+    id        BINARY(36)  not null default (UUID()) unique,
+    roleName  varchar(80) not null,
+    roleType  tinyint(2)           default 0,
+    createdAt TIMESTAMP            default now(),
+    updatedAt TIMESTAMP            default now(),
+    PRIMARY KEY (id)
+);
+INSERT INTO managerRoles(roleName, roleType)
+VALUES ('Page Manager', 1),
+       ('Advertiser Manager', 2),
+       ('Product Manager', 3),
+       ('Accounting Manager', 4),
+       ('Demo Viewer', 5),
+       ('Admin', 6),
+       ('Root', 7);
+
+
+DROP TABLE IF EXISTS managers;
+CREATE TABLE IF NOT EXISTS managers
+(
+    id            BINARY(36)   not null default (UUID()) unique,
+    name          varchar(50)  not null,
+    password      varchar(250) not null,
+    slug          varchar(100) not null,
+    rememberToken varchar(150) null COMMENT 'Search',
+    email         varchar(100) not null unique,
+    roleId        BINARY(36)   not null,
+    active        enum ('0','1')        default '1',
+    createdAt     TIMESTAMP             default now(),
+    updatedAt     TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (roleId) REFERENCES managerRoles (id)
+);
+
+
+DROP TABLE IF EXISTS managerFeatures;
+CREATE TABLE IF NOT EXISTS managerFeatures
+(
+    id         BINARY(36)     not null default (UUID()) unique,
+    lastname   varchar(50)    null,
+    phone      char(13)       null unique,
+    genre      enum ('m','f') not null default 'm' COMMENT 'Male&Female',
+    managerId  BINARY(36)     not null,
+    filePathId BINARY(36)     not null,
+    createdAt  TIMESTAMP               default now(),
+    updatedAt  TIMESTAMP               default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id),
+    FOREIGN KEY (filePathId) REFERENCES filePaths (id)
+);
+
+DROP TABLE IF EXISTS managerRolePermissions;
+CREATE TABLE IF NOT EXISTS managerRolePermissions
+(
+    id            BINARY(36)  not null default (UUID()) unique,
+    permission    varchar(60) not null,
+    managerId     BINARY(36)  not null,
+    managerRoleId BINARY(36)  not null,
+    createdAt     TIMESTAMP            default now(),
+    updatedAt     TIMESTAMP            default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id),
+    FOREIGN KEY (managerRoleId) REFERENCES managerRoles (id)
+);
+
+
+DROP TABLE IF EXISTS managerLogs;
+CREATE TABLE IF NOT EXISTS managerLogs
+(
+    id        BINARY(36)      not null default (UUID()) unique,
+    ipv4      int(4) unsigned NOT NULL COMMENT 'INET_NTOA',
+    log       json            not null,
+    type      smallint(3) unsigned     default 0 COMMENT 'Konulacak yere göre tipi',
+    managerId BINARY(36)      not null,
+    createdAt TIMESTAMP                default now(),
+    updatedAt TIMESTAMP                default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id)
+);
+
+
+
+/*
+ Manager Area End
+ */
+
+
+/*
+ Product
+ */
+
+
+DROP TABLE IF EXISTS categorySeoes;
+CREATE TABLE IF NOT EXISTS categorySeoes
+(
+    id          BINARY(36)   not null default (UUID()) unique,
+    category    varchar(100) null,
+    description varchar(100) null,
+    keywords    varchar(100) null,
+    categoryId  BINARY(36)   not null,
+    createdAt   TIMESTAMP             default now(),
+    updatedAt   TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (categoryId) REFERENCES categories (id)
+);
+
+
+DROP TABLE IF EXISTS categories;
+CREATE TABLE IF NOT EXISTS categories
+(
+    id         BINARY(36)   not null default (UUID()) unique,
+    name       varchar(100) not null,
+    slug       varchar(105) not null unique,
+    type       smallint(3) unsigned  default 1,
+    orders     smallint(3) unsigned  default 0,
+    parentId   BINARY(36)            default 0,
+    managerId  BINARY(36)   not null,
+    languageId BINARY(36)            default 1,
+    filePathId BINARY(36)   not null,
+    active     enum ('0','1')        default '1',
+    createdAt  TIMESTAMP             default now(),
+    updatedAt  TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (parentId) REFERENCES categories (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id),
+    FOREIGN KEY (languageId) REFERENCES languages (id),
+    FOREIGN KEY (filePathId) REFERENCES filePaths (id)
+);
+
+DROP TABLE IF EXISTS Tags;
+CREATE TABLE IF NOT EXISTS Tags
+(
+    id         BINARY(36)   not null default (UUID()) unique,
+    name       varchar(100) not null,
+    slug       varchar(105) not null unique,
+    type       smallint(3) unsigned  default 1,
+    managerId  BINARY(36)   not null,
+    categoryId BINARY(36)   not null,
+    languageId BINARY(36)            default 1,
+    filePathId BINARY(36)   not null,
+    active     enum ('0','1')        default '1',
+    createdAt  TIMESTAMP             default now(),
+    updatedAt  TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id),
+    FOREIGN KEY (categoryId) REFERENCES categories (id),
+    FOREIGN KEY (languageId) REFERENCES languages (id),
+    FOREIGN KEY (filePathId) REFERENCES filePaths (id)
+);
+
+DROP TABLE IF EXISTS menus;
+CREATE TABLE IF NOT EXISTS menus
+(
+    id         BINARY(36)   not null default (UUID()) unique,
+    name       varchar(100) not null,
+    slug       varchar(105) not null unique,
+    type       smallint(3) unsigned  default 1,
+    orders     smallint(3) unsigned  default 0,
+    parentId   BINARY(36)            default 0,
+    managerId  BINARY(36)   not null,
+    languageId BINARY(36)            default 1,
+    active     enum ('0','1')        default '1',
+    createdAt  TIMESTAMP             default now(),
+    updatedAt  TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (parentId) REFERENCES menus (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id),
+    FOREIGN KEY (languageId) REFERENCES languages (id)
+);
+
+
+DROP TABLE IF EXISTS pages;
+CREATE TABLE IF NOT EXISTS pages
+(
+    id          BINARY(36) not null default (UUID()) unique,
+    description mediumblob not null,
+    languageId  BINARY(36)          default 1,
+    active      enum ('0','1')      default '1',
+    createdAt   TIMESTAMP           default now(),
+    updatedAt   TIMESTAMP           default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (languageId) REFERENCES languages (id)
+);
+
+DROP TABLE IF EXISTS blogSettings;
+CREATE TABLE IF NOT EXISTS blogSettings
+(
+    id         varchar(4)     default 'blog' unique,
+    recentPost boolean        default true,
+    sidebar    boolean        default true,
+    managerId  BINARY(36) not null,
+    active     enum ('0','1') default '1',
+    createdAt  TIMESTAMP      default now(),
+    updatedAt  TIMESTAMP      default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id)
+);
+
+
+DROP TABLE IF EXISTS blogs;
+CREATE TABLE IF NOT EXISTS blogs
+(
+    id          BINARY(36)   not null default (UUID()) unique,
+    name        varchar(140) not null,
+    slug        varchar(155) not null unique,
+    description BLOB         not null,
+    orders      smallint(3) unsigned  default 0,
+    managerId   BINARY(36)   not null,
+    filePathId  BINARY(36)   not null,
+    languageId  BINARY(36)            default 1,
+    active      enum ('0','1')        default '1',
+    createdAt   TIMESTAMP             default now(),
+    updatedAt   TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id),
+    FOREIGN KEY (languageId) REFERENCES languages (id),
+    FOREIGN KEY (filePathId) REFERENCES filePaths (id)
+);
+
+
+/*
+ Campaign Start
+ */
+DROP TABLE IF EXISTS campaignSettings;
+CREATE TABLE IF NOT EXISTS campaignSettings
+(
+    id          BINARY(36)   not null default (UUID()) unique,
+    name        varchar(140) not null,
+    slug        varchar(155) not null unique,
+    description BLOB         not null,
+    type        smallint(3) unsigned  default 1,
+    managerId   BINARY(36)   not null,
+    active      enum ('0','1')        default '1',
+    startDate   TIMESTAMP             default now(),
+    endDate     TIMESTAMP             default (now() + INTERVAL 30 DAY),
+    createdAt   TIMESTAMP             default now(),
+    updatedAt   TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id)
+);
+
+DROP TABLE IF EXISTS campaigns;
+CREATE TABLE IF NOT EXISTS campaigns
+(
+    id                 BINARY(36)   not null default (UUID()) unique,
+    name               varchar(140) not null,
+    slug               varchar(155) not null unique,
+    description        BLOB         not null,
+    campaignSettingsId BINARY(36)   not null,
+    active             enum ('0','1')        default '1',
+    startDate          TIMESTAMP             default now(),
+    endDate            TIMESTAMP             default (now() + INTERVAL 30 DAY),
+    createdAt          TIMESTAMP             default now(),
+    updatedAt          TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (campaignSettingsId) REFERENCES sliderSettings (id)
+);
+
+/*
+ Campaign End
+ */
+/*
+ Coupon area start
+ */
+
+/*
+ Coupon area end
+ */
+/*
+ Plugins area start
+ */
+
+DROP TABLE IF EXISTS sliderSettings;
+CREATE TABLE IF NOT EXISTS sliderSettings
+(
+    id             BINARY(36)  not null default (UUID()) unique,
+    slider_name    varchar(50) not null,
+    autoplay       boolean     not null default true,
+    speed          varchar(5)           default '1000',
+    centered       boolean     not null default false,
+    buttons        boolean     not null default false COMMENT 'Prev/Next Buttons',
+    loops          boolean     not null default false COMMENT 'Infinite Loop',
+    playHoverPause boolean     not null default false COMMENT 'Pause on mouse hover',
+    type           smallint(3) unsigned default 1,
+    managerId      BINARY(36)  not null,
+    active         enum ('0','1')       default '1',
+    createdAt      TIMESTAMP            default now(),
+    updatedAt      TIMESTAMP            default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id)
+);
+
+
+DROP TABLE IF EXISTS sliders;
+CREATE TABLE IF NOT EXISTS sliders
+(
+    id               BINARY(36)   not null default (UUID()) unique,
+    header_text      varchar(250) not null,
+    small_text       varchar(250) null,
+    description      text         null,
+    orders           smallint(3) unsigned  default 0,
+    sliderSettingsId BINARY(36)   not null,
+    filePathId       BINARY(36)   not null,
+    active           enum ('0','1')        default '1',
+    startDate        TIMESTAMP             default now(),
+    endDate          TIMESTAMP             default (now() + INTERVAL 30 DAY),
+    createdAt        TIMESTAMP             default now(),
+    updatedAt        TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (filePathId) REFERENCES filePaths (id),
+    FOREIGN KEY (sliderSettingsId) REFERENCES sliderSettings (id)
+);
+
+DROP TABLE IF EXISTS faqSettings;
+CREATE TABLE IF NOT EXISTS faqSettings
+(
+    id          BINARY(36)   not null default (UUID()) unique,
+    headerText  varchar(250) not null,
+    smallText   varchar(250) null,
+    description text         null,
+    managerId   BINARY(36)   not null,
+    active      enum ('0','1')        default '1',
+    createdAt   TIMESTAMP             default now(),
+    updatedAt   TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id)
+);
+
+DROP TABLE IF EXISTS faqs;
+CREATE TABLE IF NOT EXISTS faqs
+(
+    id            BINARY(36)   not null default (UUID()) unique,
+    headerText    varchar(250) not null,
+    description   text         null,
+    icon          varchar(50)  null,
+    faqSettingsId BINARY(36)   not null,
+    active        enum ('0','1')        default '1',
+    startDate     TIMESTAMP             default now(),
+    endDate       TIMESTAMP             default (now() + INTERVAL 30 DAY),
+    createdAt     TIMESTAMP             default now(),
+    updatedAt     TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (faqSettingsId) REFERENCES faqSettings (id)
+);
+
+DROP TABLE IF EXISTS bannerSettings;
+CREATE TABLE IF NOT EXISTS bannerSettings
+(
+    id        BINARY(36)  not null default (UUID()) unique,
+    width     varchar(20) not null,
+    managerId BINARY(36)  not null,
+    active    enum ('0','1')       default '1',
+    createdAt TIMESTAMP            default now(),
+    updatedAt TIMESTAMP            default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id)
+);
+
+DROP TABLE IF EXISTS banners;
+CREATE TABLE IF NOT EXISTS banners
+(
+    id               BINARY(36)           not null default (UUID()) unique,
+    headerText       varchar(250)         not null,
+    description      text                 null,
+    smallText        varchar(250)         null,
+    icon             varchar(50)          null,
+    type             smallint(3) unsigned not null COMMENT 'Banner Tarzı Nasıl olmalı',
+    fullWidth        boolean                       default true,
+    link             varchar(250)         null,
+    link_class       varchar(100)         null,
+    filePathId       BINARY(36)           not null,
+    bannerSettingsId BINARY(36)           not null,
+    active           enum ('0','1')                default '1',
+    createdAt        TIMESTAMP                     default now(),
+    updatedAt        TIMESTAMP                     default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (filePathId) REFERENCES filePaths (id),
+    FOREIGN KEY (bannerSettingsId) REFERENCES bannerSettings (id)
+);
+
+DROP TABLE IF EXISTS contacts;
+CREATE TABLE IF NOT EXISTS contacts
+(
+    id          varchar(7)     default 'contact' unique,
+    headerText  varchar(250) not null,
+    description text         null,
+    smallText   varchar(250) null,
+    location    text         not null,
+    phone       varchar(15)  not null,
+    email       varchar(50)  not null,
+    managerId   BINARY(36)   not null,
+    active      enum ('0','1') default '1',
+    createdAt   TIMESTAMP      default now(),
+    updatedAt   TIMESTAMP      default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id)
+);
+
+DROP TABLE IF EXISTS gmaps;
+CREATE TABLE IF NOT EXISTS gmaps
+(
+    id         varchar(4)           default 'gmap' unique,
+    latitude   varchar(15)  not null,
+    longitude  varchar(15)  not null,
+    zoom       smallint(3) unsigned default 10,
+    info       varchar(100) null,
+    filePathId BINARY(36)   not null COMMENT 'Marker Image',
+    managerId  BINARY(36)   not null,
+    active     enum ('0','1')       default '1',
+    createdAt  TIMESTAMP            default now(),
+    updatedAt  TIMESTAMP            default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (managerId) REFERENCES managers (id),
+    FOREIGN KEY (filePathId) REFERENCES filePaths (id)
+);
+
+/*
+  Plugins area end
+  */
+
+/*
+ Product Area Start
+ */
+
+DROP TABLE IF EXISTS products;
+CREATE TABLE IF NOT EXISTS products
+(
+    id                 BINARY(36)   not null default (UUID()) unique,
+    product_code       varchar(20)  null unique,
+    name               varchar(100) not null,
+    slug               varchar(105) not null unique,
+    description        text         not null,
+    gender             boolean               default 0,
+    basketIncreaseSize tinyint               default 1,
+    basketMaxSize      tinyint               default 100,
+    visitCount         int(5) unsigned       default 0,
+    madeIn             varchar(20)           default null,
+    stock              int(5) unsigned       default 1,
+    available          boolean               default 1,
+    languageId         BINARY(36)            default 1,
+    userId             BINARY(36)            null,
+    categoryId         BINARY(36)            not null,
+    active             enum ('0','1')        default '1',
+    createdAt          TIMESTAMP             default now(),
+    updatedAt          TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (categoryId) REFERENCES categories (id),
+    FOREIGN KEY (languageId) REFERENCES languages (id)
+);
+
+DROP TABLE IF EXISTS productPrices;
+CREATE TABLE IF NOT EXISTS productPrices
+(
+    id            BINARY(36) not null default (UUID()) unique,
+    price         float(5, 2)         default 0,
+    originalPrice float(5, 2)         default 0,
+    productId     BINARY(36) not null,
+    currencyId    BINARY(36)          default 1,
+    active        enum ('0','1')      default '1',
+    createdAt     TIMESTAMP           default now(),
+    updatedAt     TIMESTAMP           default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (productId) REFERENCES products (id),
+    FOREIGN KEY (currencyId) REFERENCES currencies (id)
+);
+
+DROP TABLE IF EXISTS productVariantSites;
+CREATE TABLE IF NOT EXISTS productVariantSites
+(
+    id        BINARY(36)  not null default (UUID()) unique,
+    variantId varchar(15) null,
+    productId BINARY(36)  not null,
+    createdAt TIMESTAMP            default now(),
+    updatedAt TIMESTAMP            default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (productId) REFERENCES products (id)
+);
+
+DROP TABLE IF EXISTS product_seo;
+CREATE TABLE IF NOT EXISTS productSeos
+(
+    id          BINARY(36)   not null default (UUID()) unique,
+    category    varchar(100) null,
+    description varchar(100) null,
+    keywords    varchar(100) null,
+    productId   BINARY(36)   null,
+    createdAt   TIMESTAMP             default now(),
+    updatedAt   TIMESTAMP             default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (productId) REFERENCES products (id)
+);
+
+DROP TABLE IF EXISTS productBrands;
+CREATE TABLE IF NOT EXISTS productBrands
+(
+    id        BINARY(36)  not null default (UUID()) unique,
+    productId BINARY(36)  not null,
+    brand     varchar(30) null,
+    createdAt TIMESTAMP            default now(),
+    updatedAt TIMESTAMP            default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (productId) REFERENCES products (id)
+);
+
+
+DROP TABLE IF EXISTS productRates;
+CREATE TABLE IF NOT EXISTS productRates
+(
+    id        BINARY(36)    not null default (UUID()) unique,
+    rate      decimal(5, 2) null,
+    productId BINARY(36)    not null,
+    userId    BINARY(36)    not null,
+    createdAt TIMESTAMP              default now(),
+    updatedAt TIMESTAMP              default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (productId) REFERENCES products (id),
+    FOREIGN KEY (userId) REFERENCES managers (id)
+);
+
+
+
+DROP TABLE IF EXISTS companyTypes;
+CREATE TABLE IF NOT EXISTS companyTypes
+(
+    id          BINARY(36) not null default (UUID()) unique,
+    description text(60)            default 'Şahıs',
+    createdAt   TIMESTAMP           default now(),
+    updatedAt   TIMESTAMP           default now(),
+    PRIMARY KEY (id)
+);
+
+INSERT INTO companyTypes(description)
+VALUES ('Şahıs')
+     , ('Şahıs Şirketi')
+     , ('Sermaye Şirketi')
+     , ('Adi Ortaklık')
+     , ('Dernek')
+     , ('Vakıf')
+     , ('Sendika')
+     , ('Kooperatif')
+     , ('Belediye')
+     , ('BİT/KİT')
+     , ('Sendika')
+     , ('Site')
+     , ('Siyasi Parti')
+     , ('Resmi Kurum')
+     , ('Okul Aile Birliği');
+
+
+DROP TABLE IF EXISTS Companies;
+CREATE TABLE IF NOT EXISTS Companies
+(
+    id                BINARY(36)           not null default (UUID()) unique,
+    userCompanyTypeId BINARY(36)           not null,
+    vergiDairesiId    smallint(2) unsigned not null,
+    vergiNo           varchar(11)                   default '1',
+    createdAt         TIMESTAMP                     default now(),
+    updatedAt         TIMESTAMP                     default now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (userCompanyTypeId) REFERENCES companyTypes (id),
+    FOREIGN KEY (vergiDairesiId) REFERENCES vergiDairesis (id)
+);
+
+
+/*
+ User Area End
+ */
+SET FOREIGN_KEY_CHECKS = 1;

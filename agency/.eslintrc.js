@@ -101,13 +101,8 @@ module.exports = {
             before: false,
             after: true
         }],
-        'max-params': ['error', 3],
-        'dot-notation': 0,
-        'vue/valid-v-slot': 'off',
-        'vue/require-prop-types': 'off',
-        'vue/require-default-prop': 'off',
-        'vue/no-mutating-props': 'off',
-        'vue/no-unused-vars': 'off'
+        'max-params': ['error', 4],
+        'dot-notation': 0
     },
     globals: {
         document: true,
@@ -127,6 +122,7 @@ module.exports = {
         Laraplay: true,
         global: true,
         $config: true,
-        $nuxt: true
+        $nuxt: true,
+        $gsap: true
     }
 };

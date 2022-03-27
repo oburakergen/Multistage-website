@@ -1,0 +1,140 @@
+*  {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+}
+body {
+  @include font-mixin($rich-black-fogra-29, 16px, $fontRaleway);
+  background-color: $cultured;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-transition: background-color 0.5s ease-out;
+  -o-transition: background-color 0.5s ease-out;
+  transition: background-color 0.5s ease-out;
+  > * {
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none;
+  }
+
+  h1 {
+    @include font-mixin($gray-web, 2.6rem,$fontSerifPro);
+  }
+
+  h2 {
+    @include font-mixin($gray-web, 2.2rem,$fontSerifPro);
+  }
+
+  h3 {
+    @include font-mixin($gray-web, 1.8rem,$fontSerifPro);
+  }
+
+  h4 {
+    @include font-mixin($gray-web, 1.4rem,$fontSerifPro);
+  }
+
+  h5 {
+    @include font-mixin($gray-web, 1rem,$fontSerifPro);
+  }
+
+  h6 {
+    @include font-mixin($gray-web, 0.8rem,$fontSerifPro);
+  }
+
+  a {
+    text-decoration: none;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+
+  form {
+    input:hover,
+    input:focus {
+      outline: none !important;
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  img {
+    border-style: none;
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+
+  p {
+    @include font-mixin($gray-web, 16px,$fontRaleway);
+    line-height: 30px;
+    margin-bottom: 0;
+  }
+
+  .rl-font {
+    font-family: $fontRaleway;
+  }
+
+  .ssp-font {
+    font-family: $fontSerifPro;
+  }
+
+  .main-root {
+    background: inherit;
+    &:before {
+      content: "";
+      opacity: 0.4;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  }
+
+  body.nav-active main.main-root {
+    -webkit-transform: scale(0.5, 1) translateX(30%);
+    -ms-transform: scale(0.5, 1) translateX(30%);
+    transform: scale(0.5, 1) translateX(30%);
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+  }
+}
+
+
+@media only screen and (max-width: 991px) {
+  .container {
+    max-width: 100%;
+    padding-right: 50px;
+    padding-left: 50px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .container {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+}
+
+@media only screen and (max-width: 575px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+}
